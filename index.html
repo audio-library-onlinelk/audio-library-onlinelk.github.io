@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Library Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a:hover {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .audio-player {
+            margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .copy-button {
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .copy-button:hover {
+            background-color: #27ae60;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #ddd;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #3498db;
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+
+            a {
+                font-size: 14px;
+            }
+
+            .copy-button {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Download and Play All Audio Files</h1>
+        <button id="fetchFiles">Fetch and Display Files</button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <ul id="fileList"></ul>
+    </div>
+
+    <script>
+        document.getElementById('fetchFiles').addEventListener('click', fetchAndDisplayFiles);
+
+        async function fetchAndDisplayFiles() {
+            const baseUrl = 'https://audio-library-onlinelk.github.io/audio/';
+            const audioFolder = 'audio'; // Folder containing audio files
+
+            try {
+                const response = await fetch(baseUrl + audioFolder);
+                const text = await response.text();
+                const fileList = parseFileList(text);
+                const totalFiles = fileList.length;
+                let filesProcessed = 0;
+
+                const ul = document.getElementById('fileList');
+                ul.innerHTML = ''; // Clear existing list
+
+                fileList.forEach(file => {
+                    const li = document.createElement('li');
+
+                    // Create link for file
+                    const link = document.createElement('a');
+                    link.href = baseUrl + audioFolder + '/' + file;
+                    link.textContent = file;
+                    link.download = file;
+
+                    // Create audio player
+                    const audioPlayer = document.createElement('audio');
+                    audioPlayer.className = 'audio-player';
+                    audioPlayer.controls = true;
+                    audioPlayer.src = baseUrl + audioFolder + '/' + file;
+
+                    // Create copy button
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'copy-button';
+                    copyButton.textContent = 'Copy Link';
+                    copyButton.onclick = () => copyToClipboard(link.href);
+
+                    li.appendChild(link);
+                    li.appendChild(audioPlayer);
+                    li.appendChild(copyButton);
+                    ul.appendChild(li);
+
+                    // Update progress bar
+                    const progressBar = document.getElementById('progressBar');
+                    const updateProgress = () => {
+                        filesProcessed++;
+                        const progress = (filesProcessed / totalFiles) * 100;
+                        progressBar.style.width = `${progress}%`;
+                    };
+
+                    // Simulate file processing and update progress bar
+                    setTimeout(updateProgress, 500);
+                });
+            } catch (error) {
+                console.error('Error fetching file list:', error);
+            }
+        }
+
+        function parseFileList(text) {
+            const fileList = [];
+            const lines = text.split('\n');
+            lines.forEach(line => {
+                if (line.endsWith('.mp3') || line.endsWith('.wav')) {
+                    const fileName = line.split('/').pop();
+                    fileList.push(fileName);
+                }
+            });
+            return fileList;
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch(err => {
+                console.error('Error copying link:', err);
+            });
+        }
+    </script>
+</body>
+</html>
