@@ -57,8 +57,8 @@
         li {
             margin: 10px 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             gap: 10px;
         }
 
@@ -79,9 +79,9 @@
         }
 
         .audio-player {
-            margin-top: 10px;
             width: 100%;
             max-width: 300px;
+            margin-top: 10px;
         }
 
         .copy-button {
@@ -151,11 +151,11 @@
         document.getElementById('fetchFiles').addEventListener('click', fetchAndDisplayFiles);
 
         async function fetchAndDisplayFiles() {
-            const baseUrl = 'https://audio-library-onlinelk.github.io/audio/';
-            const audioFolder = 'audio'; // Folder containing audio files
+            const baseUrl = './audio/'; // Assuming the audio folder is in the same directory
+            const audioFolder = ''; // No need to add folder if it's in the root
 
             try {
-                const response = await fetch(baseUrl + audioFolder);
+                const response = await fetch(baseUrl);
                 const text = await response.text();
                 const fileList = parseFileList(text);
                 const totalFiles = fileList.length;
@@ -169,7 +169,7 @@
 
                     // Create link for file
                     const link = document.createElement('a');
-                    link.href = baseUrl + audioFolder + '/' + file;
+                    link.href = baseUrl + file;
                     link.textContent = file;
                     link.download = file;
 
@@ -177,7 +177,7 @@
                     const audioPlayer = document.createElement('audio');
                     audioPlayer.className = 'audio-player';
                     audioPlayer.controls = true;
-                    audioPlayer.src = baseUrl + audioFolder + '/' + file;
+                    audioPlayer.src = baseUrl + file;
 
                     // Create copy button
                     const copyButton = document.createElement('button');
@@ -226,9 +226,5 @@
             });
         }
     </script>
-    <audio class="audio-player" hidden>
-            <source src="./audio/පායනා පුන්සඳ පැරදෙනා - payana punsada paradena remix _ Chipmunks version song _ Himabole Studio.mp3" type="audio/mp3">
-            Your browser does not support the audio element.
-        </audio>
 </body>
 </html>
