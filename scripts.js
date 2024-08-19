@@ -1,7 +1,7 @@
 const streams = {
-    'Hiru Radio': 'https://radio.lotustechnologieslk.net:2020/stream/shaafmgarden',
-    'Stream 2': 'https://example.com/stream2', 
-    'Stream 3': 'https://example.com/stream3'  
+    'hiru': 'https://radio.lotustechnologieslk.net:2020/stream/shaafmgarden',
+    'stream2': 'https://example.com/stream2',
+    'stream3': 'https://example.com/stream3'
 
 };
 
@@ -23,7 +23,7 @@ async function populateStreamsTable() {
 
     tableBody.innerHTML = '';
     
-
+    // Iterate through the streams and add rows to the table
     for (const [name, url] of Object.entries(streams)) {
         const isActive = await checkStreamStatus(url);
         const statusClass = isActive ? 'status-active' : 'status-inactive';
@@ -62,5 +62,6 @@ function fetchRadioStream() {
         alert('No stream available for the given parameter.');
     }
 }
+
 
 window.onload = populateStreamsTable;
