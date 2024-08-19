@@ -1,3 +1,4 @@
+// List of available streams with their URLs
 const streams = {
     'hiru': 'https://radio.lotustechnologieslk.net:2020/stream/shaafmgarden',
     'stream2': 'https://example.com/stream2',
@@ -23,7 +24,7 @@ async function populateStreamsTable() {
 
     tableBody.innerHTML = '';
     
-    // Iterate through the streams and add rows to the table
+
     for (const [name, url] of Object.entries(streams)) {
         const isActive = await checkStreamStatus(url);
         const statusClass = isActive ? 'status-active' : 'status-inactive';
@@ -40,12 +41,10 @@ async function populateStreamsTable() {
     }
 }
 
-
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
 }
-
 
 function fetchRadioStream() {
     const streamParam = getQueryParam('stream');
